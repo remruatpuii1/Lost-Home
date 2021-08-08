@@ -7,17 +7,21 @@ var bg1,floor;
 var rh,rhi,rhj,rhr,rhh,rhd;
 var lrhi,lrhj,lrhr,lrhh;
 var zm,zma,zmd,zmw,zmGroup;
-var zf,zfa,zfd,zfw;
+var zf,zfa,zfd,zfw,zfGroup;
 var el,el1,l,l1,l2,l3;
 var spike,s1,spikeGroup;
 var fx,fx1,fx2,fx3;
+var peach,ph1,peachGroup;
+var vis = 255;
+var count = 0;
 var gameState = "play";
-var END = 0;
 
 function preload()
 {
   // Loading up the images & animations 
   bg1 = loadImage("bg.jpg");
+
+  ph1 = loadImage("peach.png");
 
   el1 = loadImage("Ui/extra_l.png");
   l1 = loadImage("Ui/life.png");
@@ -110,7 +114,7 @@ function setup()
   floor = createSprite(1,600,2500,10);
   floor.visible=false;
 
-  /*l = createSprite(70,50,10,10);
+  l = createSprite(70,50,10,10);
   l.addImage("life",l1);
   l.scale=0.1;
 
@@ -120,10 +124,12 @@ function setup()
 
   l3 = createSprite(210,50,10,10);
   l3.addImage("life",l1);
-  l3.scale=0.1;*/
+  l3.scale=0.1;
 
   spikeGroup = new Group();
   zmGroup = new Group();
+  zfGroup = new Group();
+  peachGroup = new Group();
 
 }
 
@@ -165,31 +171,123 @@ function draw()
       fx1.play();
   }
 
+  if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh) || zfGroup.isTouching(rh))
+  {
+    fx3.play();
+    gameState="Life";
+  }
 
   createSpikes();
   randomHearts();
   zombieBoy();
+  zombieGirl();
+  createPeach();
   }
 
-if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh))
+else if(gameState==="Life")
 {
-  gameState=END;
-  fx3.play();
+  rh.velocityY += 0.8;
+    
+  if(keyDown("right_arrow"))
+  {
+    rh.addAnimation("idle",rhr);
+    rh.velocityX =6;
+    rh.x +=5;
+  }
+
+  if(keyDown("left_arrow") && rh.x>10)
+  {
+    rh.addAnimation("idle",lrhr);
+    rh.velocityX =-6;
+    rh.x -=5;
+  }
+
+  if(keyDown("space") && rh.y>450 && rh.velocityX +6 )
+  {
+    rh.addAnimation("idle",rhj);
+      rh.velocityY = -18;
+      fx1.play();
+  }
+  
+  if(keyDown("space") && rh.y>450 && rh.velocityX -6 )
+  {
+    rh.addAnimation("idle",lrhj);
+      rh.velocityY = -18;
+      fx1.play();
+  }
+  if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh) || zfGroup.isTouching(rh))
+  {
+  count+=1;
+  console.log(count);
+  if(count===1)
+  {
+    l3.destroy();
+    push();
+    vis -=5;
+    tint(255,vis);
+    image(l1,190,30,45,45);
+    pop();
+  }
 }
-else if (gameState===END)
+    if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh) || zfGroup.isTouching(rh))
+  {
+    count+=1;
+    console.log(count);
+   if(count===2)
+  {
+    l2.destroy();
+    push();
+    vis -=5;
+    tint(255,vis);
+    image(l1,150,30,45,45);
+    pop();
+
+  }
+
+  }
+
+  if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh) || zfGroup.isTouching(rh))
+{
+  count+=1;
+  console.log(count);
+ if(count===3)
+  {
+    l.destroy();
+    push();
+    vis -=5;
+    tint(255,vis);
+    image(l1,100,30,45,45);
+    pop();
+    gameState="End";
+  }
+}
+  
+  createSpikes();
+  randomHearts();
+  zombieBoy();
+  zombieGirl();
+  createPeach();
+  
+}
+
+else if (gameState==="End")
 {
   rh.addAnimation("idle",rhd);
   rh.velocityX=0;
   zmGroup.destroyEach();
+  zfGroup.destroyEach();
   spikeGroup.destroyEach();
+  peachGroup.destroyEach();
+  peachGroup.setVelocityYEach = 0;
   zmGroup.setVelocityXEach = 0;
+  zfGroup.setVelocityXEach = 0;
   textSize(50);
   text("Game Over",400,350);
 }
 
   drawSprites();
 
-}
+} 
 
 function createSpikes()
 {
@@ -225,9 +323,44 @@ function zombieBoy()
     zm.addAnimation("zombieBoy",zmw);
     zm.scale=0.30;
     zm.velocityX=3;
+    zfGroup.add(zm);
     if(frameCount%800===0)
     {
       zmGroup.destroyEach();
     }
   }
+}
+
+function zombieGirl()
+{
+  if(frameCount%200===0)
+  {
+    zf = createSprite(width*2,480,10,10);
+    zf.addAnimation("zombieGirl",zfw);
+    zf.scale=0.30;
+    zf.velocityX=-3; 
+    zfGroup.add(zf);
+    if(frameCount%600===0)
+    {
+      zfGroup.destroyEach();
+    }
+  }
+
+}
+
+function createPeach()
+{
+  if(frameCount%200===0)
+  {
+  peach = createSprite(random(10,width-10),60,10,10);
+  peach.addImage("peach",ph1);
+  peach.scale=0.070;
+  peach.velocityY=6;
+  peachGroup.add(peach);
+  if(frameCount%400===0)
+  {
+    peachGroup.destroyEach();
+  }
+  }
+
 }
