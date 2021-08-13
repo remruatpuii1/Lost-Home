@@ -8,14 +8,16 @@ var rh,rhi,rhj,rhr,rhh,rhd;
 var lrhi,lrhj,lrhr,lrhh;
 var zm,zma,zmd,zmw,zmGroup;
 var zf,zfa,zfd,zfw,zfGroup;
-var el,el1,l,l1,l2,l3;
+var el,el1,l,l1,l2,l3,l4,l5,elGroup;
 var spike,s1,spikeGroup;
 var fx,fx1,fx2,fx3;
 var peach,ph1,peachGroup;
+var score = 0;
 var vis = 255;
 var count = 0;
 var gameState = "play";
-
+var num=0;
+var hearts=[];
 function preload()
 {
   // Loading up the images & animations 
@@ -114,28 +116,25 @@ function setup()
   floor = createSprite(1,600,2500,10);
   floor.visible=false;
 
-  l = createSprite(70,50,10,10);
-  l.addImage("life",l1);
-  l.scale=0.1;
-
-  l2 = createSprite(140,50,10,10);
-  l2.addImage("life",l1);
-  l2.scale=0.1;
-
-  l3 = createSprite(210,50,10,10);
-  l3.addImage("life",l1);
-  l3.scale=0.1;
+  for(i=0;i<=2;i++){
+  hearts[i] = createSprite(70*(i+1),50,10,10);
+  hearts[i].addImage("life",l1);
+  hearts[i].scale=0.1;
+  }
 
   spikeGroup = new Group();
   zmGroup = new Group();
   zfGroup = new Group();
   peachGroup = new Group();
+  elGroup = new Group();
 
 }
 
 function draw() 
 {
-  background(bg1,windowWidth,windowHeight);  
+  background(bg1,windowWidth,windowHeight); 
+  textSize(20);
+  text("Score: "+score,width-150,50);
   Engine.update(engine);
   rh.collide(floor);
  
@@ -176,7 +175,34 @@ function draw()
     fx3.play();
     gameState="Life";
   }
+  if(peachGroup.isTouching(rh))
+  {
+    score +=10;
+    peachGroup.destroyEach();
+  }
 
+  if(elGroup.isTouching(rh))
+  {
+    score +=10;
+    if(num===0)
+    {
+        var len=hearts.length;
+        console.log(len);
+        hearts[len+1]= createSprite(70*len,50,10,10);
+        hearts[len+1].addImage("life",l1);
+        hearts[len+1].scale=0.1;
+        num=1;
+      }
+    else if(num===1){
+      var len=hearts.length;
+      console.log(len);
+      hearts[len+1]= createSprite(70*len,50,10,10);
+      hearts[len+1].addImage("life",l1);
+      hearts[len+1].scale=0.1;
+      }
+      elGroup.destroyEach();
+    }
+  
   createSpikes();
   randomHearts();
   zombieBoy();
@@ -215,7 +241,35 @@ else if(gameState==="Life")
       rh.velocityY = -18;
       fx1.play();
   }
-  if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh) || zfGroup.isTouching(rh))
+
+  if(peachGroup.isTouching(rh))
+  {
+    score +=10;
+    peachGroup.destroyEach();
+  }
+
+  if(elGroup.isTouching(rh))
+  {
+    score +=10;
+    if(num===0)
+    {
+        var len=hearts.length;
+        hearts[len+1]= createSprite(70*len,50,10,10);
+        hearts[len+1].addImage("life",l1);
+        hearts[len+1].scale=0.1;
+        num=1;
+      }
+    else if(num===1){
+      var len=hearts.length;
+      hearts[len+1]= createSprite(70*len,50,10,10);
+      hearts[len+1].addImage("life",l1);
+      hearts[len+1].scale=0.1;
+      }
+      elGroup.destroyEach();
+    }
+  
+
+  if(rh.isTouching(zmGroup) || rh.isTouching(zfGroup) || rh.isTouching(spikeGroup))
   {
   count+=1;
   console.log(count);
@@ -229,7 +283,7 @@ else if(gameState==="Life")
     pop();
   }
 }
-    if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh) || zfGroup.isTouching(rh))
+    if(rh.isTouching(zmGroup) || rh.isTouching(zfGroup) || rh.isTouching(spikeGroup))
   {
     count+=1;
     console.log(count);
@@ -243,10 +297,9 @@ else if(gameState==="Life")
     pop();
 
   }
-
   }
 
-  if(spikeGroup.isTouching(rh) || zmGroup.isTouching(rh) || zfGroup.isTouching(rh))
+  if(rh.isTouching(zmGroup) || rh.isTouching(zfGroup) || rh.isTouching(spikeGroup))
 {
   count+=1;
   console.log(count);
@@ -258,6 +311,7 @@ else if(gameState==="Life")
     tint(255,vis);
     image(l1,100,30,45,45);
     pop();
+    fx3.play();
     gameState="End";
   }
 }
@@ -306,12 +360,14 @@ function createSpikes()
 
 function randomHearts()
 {
-  if(frameCount%4500===0)
+  if(frameCount%400===0)
   {
     el = createSprite(random(10,width-10),-50,20,20);
     el.addImage("extra",el1);
     el.velocityY=10;
     el.scale=0.1;
+    elGroup.add(el);
+
   }
 }
 
@@ -322,7 +378,7 @@ function zombieBoy()
     zm = createSprite(-20,480,10,10);
     zm.addAnimation("zombieBoy",zmw);
     zm.scale=0.30;
-    zm.velocityX=3;
+    zm.velocityX=(3+frameCount/100);
     zfGroup.add(zm);
     if(frameCount%800===0)
     {
@@ -338,7 +394,7 @@ function zombieGirl()
     zf = createSprite(width*2,480,10,10);
     zf.addAnimation("zombieGirl",zfw);
     zf.scale=0.30;
-    zf.velocityX=-3; 
+    zf.velocityX=(-3+frameCount/100); 
     zfGroup.add(zf);
     if(frameCount%600===0)
     {
