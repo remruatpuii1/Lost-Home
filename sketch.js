@@ -5,9 +5,9 @@ const Constraint = Matter.Constraint;
 
 var bg1,floor;
 var rh,rhi,rhj,rhr,rhh,rhd;
-var lrhi,lrhj,lrhr,lrhh;
-var zm,zma,zmd,zmw,zmGroup;
-var zf,zfa,zfd,zfw,zfGroup;
+var lrhj,lrhr,lrhh;
+var zm,zmw,zmGroup;
+var zf,zfw,zfGroup;
 var el,el1,l,l1,l2,l3,l4,l5,elGroup;
 var spike,s1,spikeGroup;
 var fx,fx1,fx2,fx3;
@@ -18,6 +18,7 @@ var count = 0;
 var gameState = "play";
 var num=0;
 var hearts=[];
+
 function preload()
 {
   // Loading up the images & animations 
@@ -28,77 +29,37 @@ function preload()
   el1 = loadImage("Ui/extra_l.png");
   l1 = loadImage("Ui/life.png");
 
-  s1 = loadAnimation("lw/lw1.png","lw/lw2.png","lw/lw3.png","lw/lw4.png","lw/lw5.png");
+  s1 = loadAnimation("lw/lw2.png","lw/lw3.png","lw/lw4.png","lw/lw5.png");
 
   fx1 = loadSound("s/jump.wav");
   fx2 = loadSound("s/heart.wav");
   fx3 = loadSound("s/gameover.wav");
 
-  rhi = loadAnimation("redhat/Idle (1).png","redhat/Idle (2).png",
-  "redhat/Idle (3).png","redhat/Idle (4).png","redhat/Idle (5).png",
-  "redhat/Idle (6).png","redhat/Idle (7).png","redhat/Idle (8).png",
-  "redhat/Idle (9).png","redhat/Idle (10).png");
+  rhi = loadImage("redhat/Idle (1).png");
 
-  rhj = loadAnimation("redhat/Jump (1).png","redhat/Jump (2).png",
-  "redhat/Jump (3).png","redhat/Jump (4).png","redhat/Jump (5).png",
-  "redhat/Jump (6).png","redhat/Jump (7).png","redhat/Jump (8).png",
-  "redhat/Jump (9).png","redhat/Jump (10).png","redhat/Jump (11).png",
-  "redhat/Jump (12).png");
+  rhj = loadAnimation("redhat/Jump (1).png","redhat/Jump (3).png","redhat/Jump (6).png",
+  "redhat/Jump (9).png","redhat/Jump (10).png","redhat/Jump (12).png");
 
-  rhr = loadAnimation("redhat/Run (1).png","redhat/Run (2).png",
-  "redhat/Run (3).png","redhat/Run (4).png","redhat/Run (5).png",
-  "redhat/Run (6).png","redhat/Run (7).png","redhat/Run (8).png");
+  rhr = loadAnimation("redhat/Run (2).png","redhat/Run (3).png","redhat/Run (5).png",
+  "redhat/Run (6).png");
 
-  rhh = loadAnimation("redhat/Hurt (1).png","redhat/Hurt (2).png",
-  "redhat/Hurt (3).png","redhat/Hurt (4).png","redhat/Hurt (5).png",
-  "redhat/Hurt (6).png","redhat/Hurt (7).png","redhat/Hurt (8).png");
+  rhh = loadAnimation("redhat/Hurt (1).png","redhat/Hurt (3).png");
 
-  rhd = loadAnimation("redhat/Dead (1).png","redhat/Dead (2).png",
-  "redhat/Dead (3).png","redhat/Dead (4).png","redhat/Dead (5).png",
-  "redhat/Dead (6).png","redhat/Dead (7).png","redhat/Dead (8).png",
-  "redhat/Dead (9).png","redhat/Dead (10).png");
+  rhd = loadImage("redhat/Dead (10).png");
 
-  lrhi = loadAnimation("lhat/Idle (1).png","lhat/Idle (2).png","lhat/Idle (3).png",
-  "lhat/Idle (4).png","lhat/Idle (5).png","lhat/Idle (6).png","lhat/Idle (7).png",
-  "lhat/Idle (8).png","lhat/Idle (9).png","lhat/Idle (10).png");
+  lrhj = loadAnimation("lhat/Jump (1).png","lhat/Jump (3).png","lhat/Jump (6).png",
+  "lhat/Jump (9).png","lhat/Jump (10).png","lhat/Jump (12).png");
 
-  lrhj = loadAnimation("lhat/Jump (1).png","lhat/Jump (2).png","lhat/Jump (3).png",
-  "lhat/Jump (4).png","lhat/Jump (5).png","lhat/Jump (6).png","lhat/Jump (7).png",
-  "lhat/Jump (8).png","lhat/Jump (9).png","lhat/Jump (10).png","lhat/Jump (11).png",
-  "lhat/Jump (12).png");
+  lrhr = loadAnimation("lhat/Run (2).png","lhat/Run (3).png","lhat/Run (5).png",
+  "lhat/Run (6).png");
 
-  lrhr = loadAnimation("lhat/Run (1).png","lhat/Run (2).png","lhat/Run (3).png",
-  "lhat/Run (4).png","lhat/Run (5).png","lhat/Run (6).png","lhat/Run (7).png",
-  "lhat/Run (8).png");
+  lrhh = loadAnimation("lhat/Hurt (1).png","lhat/Hurt (3).png");
 
-  lrhh = loadAnimation("lhat/Hurt (1).png","lhat/Hurt (2).png","lhat/Hurt (3).png",
-  "lhat/Hurt (4).png","lhat/Hurt (5).png","lhat/Hurt (6).png","lhat/Hurt (7).png",
-  "lhat/Hurt (8).png");
+  zmw = loadAnimation("zm/Walk (1).png","zm/Walk (4).png","zm/Walk (7).png","zm/Walk (9).png",
+  "zm/Walk (10).png");
 
-  zma = loadAnimation("zm/Attack (1).png","zm/Attack (2).png","zm/Attack (3).png",
-  "zm/Attack (4).png","zm/Attack (5).png","zm/Attack (6).png","zm/Attack (7).png",
-  "zm/Attack (8).png");
-
-  zmd = loadAnimation("zm/Dead (1).png","zm/Dead (2).png","zm/Dead (3).png",
-  "zm/Dead (4).png","zm/Dead (5).png","zm/Dead (6).png","zm/Dead (7).png",
-  "zm/Dead (8).png","zm/Dead (9).png","zm/Dead (10).png","zm/Dead (11).png",
-  "zm/Dead (12).png");
-
-  zmw = loadAnimation("zm/Walk (1).png","zm/Walk (2).png","zm/Walk (3).png",
-  "zm/Walk (4).png","zm/Walk (5).png","zm/Walk (6).png","zm/Walk (7).png",
-  "zm/Walk (8).png","zm/Walk (9).png","zm/Walk (10).png");
-
-  zfa = loadAnimation("zf/Attack (1).png","zf/Attack (2).png","zf/Attack (3).png",
-  "zf/Attack (4).png","zf/Attack (5).png","zf/Attack (6).png","zf/Attack (7).png",
-  "zf/Attack (8).png");
-
-  zfd = loadAnimation("zf/Dead (1).png","zf/Dead (2).png","zf/Dead (3).png","zf/Dead (4).png",
-  "zf/Dead (5).png","zf/Dead (6).png","zf/Dead (7).png","zf/Dead (8).png","zf/Dead (9).png",
-  "zf/Dead (10).png","zf/Dead (11).png","zf/Dead (12).png");
-  
-  zfw = loadAnimation("zf/Walk (1).png","zf/Walk (2).png","zf/Walk (3).png","zf/Walk (4).png",
-  "zf/Walk (5).png","zf/Walk (6).png","zf/Walk (7).png","zf/Walk (8).png","zf/Walk (9).png",
-  "zf/Walk (10).png",);
+  zfw = loadAnimation("zf/Walk (1).png","zf/Walk (4).png","zf/Walk (7).png","zf/Walk (9).png",
+  "zf/Walk (10).png");
 
 }
 
@@ -109,11 +70,12 @@ function setup()
   engine = Engine.create();
   world = engine.world;
 
-  rh = createSprite(450,500,30,30);
-  rh.addAnimation("idle",rhi);
-  rh.scale=0.350;
+  rh = createSprite(450,550,30,30);
+  rh.addImage("idle",rhi);
+  rh.scale=0.450;
+  rh.setCollider("rectangle",0,0,250,400);
 
-  floor = createSprite(1,600,2500,10);
+  floor = createSprite(1,570,2500,10);
   floor.visible=false;
 
   for(i=0;i<=2;i++){
@@ -133,7 +95,7 @@ function setup()
 function draw() 
 {
   background(bg1,windowWidth,windowHeight); 
-  textSize(20);
+  textSize(30);
   text("Score: "+score,width-150,50);
   Engine.update(engine);
   rh.collide(floor);
@@ -145,25 +107,25 @@ function draw()
   if(keyDown("right_arrow"))
   {
     rh.addAnimation("idle",rhr);
-    rh.velocityX =6;
+    rh.velocityX =8;
     rh.x +=5;
   }
 
   if(keyDown("left_arrow") && rh.x>10)
   {
     rh.addAnimation("idle",lrhr);
-    rh.velocityX =-6;
+    rh.velocityX =-8;
     rh.x -=5;
   }
 
-  if(keyDown("space") && rh.y>450 && rh.velocityX +6 )
+  if(keyDown("space") && rh.y>450 && rh.velocityX +8 )
   {
     rh.addAnimation("idle",rhj);
       rh.velocityY = -18;
       fx1.play();
   }
   
-  if(keyDown("space") && rh.y>450 && rh.velocityX -6 )
+  if(keyDown("space") && rh.y>450 && rh.velocityX -8 )
   {
     rh.addAnimation("idle",lrhj);
       rh.velocityY = -18;
@@ -177,7 +139,7 @@ function draw()
   }
   if(peachGroup.isTouching(rh))
   {
-    score +=10;
+    score +=20;
     peachGroup.destroyEach();
   }
 
@@ -186,19 +148,20 @@ function draw()
     score +=10;
     if(num===0)
     {
-        var len=hearts.length;
-        console.log(len);
-        hearts[len+1]= createSprite(70*len,50,10,10);
-        hearts[len+1].addImage("life",l1);
-        hearts[len+1].scale=0.1;
+        var l3=hearts.length+1;
+        console.log(l3);
+        var fhrt=createSprite(70*l3,50,10,10);
+        fhrt.addImage("life",l1);
+        fhrt.scale=0.1;
+        hearts.push(fhrt);
         num=1;
       }
     else if(num===1){
-      var len=hearts.length;
-      console.log(len);
-      hearts[len+1]= createSprite(70*len,50,10,10);
-      hearts[len+1].addImage("life",l1);
-      hearts[len+1].scale=0.1;
+      var l2=hearts.length+1;
+      var thrt=createSprite(70*l2,50,10,10);
+      thrt.addImage("life",l1);
+      thrt.scale=0.1;
+      hearts.push(thrt);
       }
       elGroup.destroyEach();
     }
@@ -217,25 +180,25 @@ else if(gameState==="Life")
   if(keyDown("right_arrow"))
   {
     rh.addAnimation("idle",rhr);
-    rh.velocityX =6;
+    rh.velocityX =8;
     rh.x +=5;
   }
 
   if(keyDown("left_arrow") && rh.x>10)
   {
     rh.addAnimation("idle",lrhr);
-    rh.velocityX =-6;
+    rh.velocityX =-8;
     rh.x -=5;
   }
 
-  if(keyDown("space") && rh.y>450 && rh.velocityX +6 )
+  if(keyDown("space") && rh.y>450 && rh.velocityX +8 )
   {
     rh.addAnimation("idle",rhj);
       rh.velocityY = -18;
       fx1.play();
   }
   
-  if(keyDown("space") && rh.y>450 && rh.velocityX -6 )
+  if(keyDown("space") && rh.y>450 && rh.velocityX -8 )
   {
     rh.addAnimation("idle",lrhj);
       rh.velocityY = -18;
@@ -253,17 +216,19 @@ else if(gameState==="Life")
     score +=10;
     if(num===0)
     {
-        var len=hearts.length;
-        hearts[len+1]= createSprite(70*len,50,10,10);
-        hearts[len+1].addImage("life",l1);
-        hearts[len+1].scale=0.1;
+        var len=hearts.length+1;
+        var nhrt=createSprite(70*len,50,10,10);
+        nhrt.addImage("life",l1);
+        nhrt.scale=0.1;
+        hearts.push(nhrt);
         num=1;
       }
     else if(num===1){
-      var len=hearts.length;
-      hearts[len+1]= createSprite(70*len,50,10,10);
-      hearts[len+1].addImage("life",l1);
-      hearts[len+1].scale=0.1;
+      var len=hearts.length+1;
+      var shrt=createSprite(70*len,50,10,10);
+        nhrt.addImage("life",l1);
+        nhrt.scale=0.1;
+        hearts.push(shrt);
       }
       elGroup.destroyEach();
     }
@@ -275,7 +240,8 @@ else if(gameState==="Life")
   console.log(count);
   if(count===1)
   {
-    l3.destroy();
+    var l=hearts.length;
+    hearts[l-1].destroy();
     push();
     vis -=5;
     tint(255,vis);
@@ -289,7 +255,8 @@ else if(gameState==="Life")
     console.log(count);
    if(count===2)
   {
-    l2.destroy();
+    var l=hearts.length;
+    hearts[l-1].destroy();
     push();
     vis -=5;
     tint(255,vis);
@@ -305,7 +272,8 @@ else if(gameState==="Life")
   console.log(count);
  if(count===3)
   {
-    l.destroy();
+    var l=hearts.length;
+    hearts[l-1].destroy();
     push();
     vis -=5;
     tint(255,vis);
@@ -326,8 +294,9 @@ else if(gameState==="Life")
 
 else if (gameState==="End")
 {
-  rh.addAnimation("idle",rhd);
+  rh.addImage("idle",rhd);
   rh.velocityX=0;
+  rh.velocityY=0;
   zmGroup.destroyEach();
   zfGroup.destroyEach();
   spikeGroup.destroyEach();
@@ -335,7 +304,7 @@ else if (gameState==="End")
   peachGroup.setVelocityYEach = 0;
   zmGroup.setVelocityXEach = 0;
   zfGroup.setVelocityXEach = 0;
-  textSize(50);
+  textSize(70);
   text("Game Over",400,350);
 }
 
@@ -347,7 +316,7 @@ function createSpikes()
 {
   if(frameCount%200===0)
   {
-  spike = createSprite(random(10,width-10),530,20,20);
+  spike = createSprite(random(10,width-10),540,20,20);
   spike.addAnimation("spike",s1);
   spike.scale=0.50;
   spikeGroup.add(spike);
@@ -360,27 +329,30 @@ function createSpikes()
 
 function randomHearts()
 {
-  if(frameCount%400===0)
+  if(frameCount%500===0)//1900
   {
     el = createSprite(random(10,width-10),-50,20,20);
     el.addImage("extra",el1);
     el.velocityY=10;
-    el.scale=0.1;
+    el.scale=0.130;
     elGroup.add(el);
+    el.lifetime=height/10
 
   }
 }
 
 function zombieBoy()
 {
-  if(frameCount%400===0)
+  if(frameCount%400===0)//800
   {
     zm = createSprite(-20,480,10,10);
     zm.addAnimation("zombieBoy",zmw);
-    zm.scale=0.30;
+    zm.scale=0.40;
     zm.velocityX=(3+frameCount/100);
-    zfGroup.add(zm);
-    if(frameCount%800===0)
+    zmGroup.add(zm);
+    zm.lifetime=width/zm.velocityX;
+    zm.setCollider("rectangle",0,0,200,350);
+    if(frameCount%800===0)//1600
     {
       zmGroup.destroyEach();
     }
@@ -389,14 +361,16 @@ function zombieBoy()
 
 function zombieGirl()
 {
-  if(frameCount%200===0)
+  if(frameCount%800===0)//1500
   {
     zf = createSprite(width*2,480,10,10);
     zf.addAnimation("zombieGirl",zfw);
-    zf.scale=0.30;
-    zf.velocityX=(-3+frameCount/100); 
+    zf.scale=0.40;
+    zf.velocityX=(-5+frameCount/100); 
     zfGroup.add(zf);
-    if(frameCount%600===0)
+    zf.lifetime=width/zf.velocityX;
+    zf.setCollider("rectangle",0,0,200,350);
+    if(frameCount%1600===0)//3000
     {
       zfGroup.destroyEach();
     }
@@ -406,14 +380,15 @@ function zombieGirl()
 
 function createPeach()
 {
-  if(frameCount%200===0)
+  if(frameCount%500===0)//800
   {
   peach = createSprite(random(10,width-10),60,10,10);
   peach.addImage("peach",ph1);
-  peach.scale=0.070;
+  peach.scale=0.080;
   peach.velocityY=6;
   peachGroup.add(peach);
-  if(frameCount%400===0)
+  peach.lifetime=height/peach.velocityY
+  if(frameCount%1000===0)//1600
   {
     peachGroup.destroyEach();
   }
